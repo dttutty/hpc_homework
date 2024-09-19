@@ -40,9 +40,11 @@ $ getconf LEVEL3_CACHE_LINESIZE
 64
 ```
 - OS and kernel version  
-Kernel: 6.5.0-1025-azure  
-OS:     Ubuntu 20.04.6 LTS
 
+| Name | Value |
+|--|--|
+| Kernel | 6.5.0-1025-azure |  
+| OS | Ubuntu 20.04.6 LTS |
 ```bash
 $ uname -a
 Linux codespaces-4bf82d 6.5.0-1025-azure #26~22.04.1-Ubuntu SMP Thu Jul 11 22:33:04 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
@@ -52,13 +54,6 @@ VERSION="20.04.6 LTS (Focal Fossa)"
 ID=ubuntu
 ID_LIKE=debian
 PRETTY_NAME="Ubuntu 20.04.6 LTS"
-VERSION_ID="20.04"
-HOME_URL="https://www.ubuntu.com/"
-SUPPORT_URL="https://help.ubuntu.com/"
-BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
-PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
-VERSION_CODENAME=focal
-UBUNTU_CODENAME=focal
 ```
 - GCC version
 ```bash
