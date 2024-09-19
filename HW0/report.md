@@ -2,7 +2,7 @@
 
 Experimental Environment
 =
-1. Env: Github Workspace
+Platform: Github Workspace
 
 - Host name
 ```bash
@@ -59,4 +59,34 @@ PRETTY_NAME="Ubuntu 20.04.6 LTS"
 ```bash
 $ gcc --version
 gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
+```
+
+Measurement: Precision and Accuracy
+=
+- time
+```bash
+$ time ./a.out 100 1
+Result = 2.31e+07
+
+real    0m0.005s
+user    0m0.002s
+sys     0m0.002s
+$ time ./a.out 100 10000
+Result = 2.31e+07
+
+real    0m0.378s
+user    0m0.373s
+sys     0m0.005s
+$ time ./a.out 1000 100
+Result = 2.59e+08
+
+real    0m0.388s
+user    0m0.382s
+sys     0m0.005s
+$ time ./a.out 10000 1
+Result = 2.64e+09
+
+real    0m1.635s
+user    0m1.295s
+sys     0m0.323s
 ```
