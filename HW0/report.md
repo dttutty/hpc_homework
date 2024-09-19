@@ -63,7 +63,8 @@ gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
 
 Measurement: Precision and Accuracy
 =
-- time
+- Linux `time` command  
+
 ```bash
 $ time ./a.out 100 1
 Result = 2.31e+07
@@ -90,3 +91,19 @@ real    0m1.635s
 user    0m1.295s
 sys     0m0.323s
 ```
+- the C `getitmeofday()` function
+```bash
+$ ./a.out 100 1
+Result = 2.31e+07
+Elapsed time: 0.000206 seconds
+./a.out 100 10000
+Result = 2.31e+07
+Elapsed time: 0.373337 seconds
+$ ./a.out 1000 100
+Result = 2.59e+08
+Elapsed time: 0.383390 seconds
+$ ./a.out 10000 1
+Result = 2.64e+09
+Elapsed time: 1.665509 seconds
+```
+- perf

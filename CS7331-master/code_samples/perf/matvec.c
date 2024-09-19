@@ -38,6 +38,10 @@ void display_matrix(const double **matrix, long long N) {
 }
 
 int main(int argc, char *argv[]) {
+  struct timeval start, end;
+  long seconds, useconds;
+  double elapsed;
+  gettimeofday(&start, NULL);
 
   double **matrix;
   double *vec;
@@ -77,6 +81,14 @@ int main(int argc, char *argv[]) {
   t0 = (mysecond() - t0) * 1.e3;
   
   printf("Result = %3.2e\n", result[N - 1]);
+
+
+  gettimeofday(&end, NULL);
+
+  seconds  = end.tv_sec  - start.tv_sec;
+  useconds = end.tv_usec - start.tv_usec;
+  elapsed = seconds + useconds / 1000000.0;
+  printf("Elapsed time: %f seconds\n", elapsed);
 
   return 0;
 }
