@@ -6,20 +6,62 @@ Experimental Environment
 
 - Host name
 ```bash
-@dttutty ➜ /workspaces/hpc_homework (main) $  hostname
+$  hostname
 codespaces-4bf82d
 ```
 - CPU manufacturer, model, and clock rate.
 ```bash
-@dttutty ➜ /workspaces/hpc_homework (main) $ lscpu
+$ lscpu
 Vendor ID:  AuthenticAMD
 Model name: AMD EPYC 7763 64-Core Processor
 CPU MHz:    3242.790
 ```
 - Number of physical cores and logical cores
 ```bash
-@dttutty ➜ /workspaces/hpc_homework (main) $ cat /proc/cpuinfo | grep "cpu cores" | uniq
+$ cat /proc/cpuinfo | grep "cpu cores" | uniq
 cpu cores       : 1
-@dttutty ➜ /workspaces/hpc_homework (main) $ cat /proc/cpuinfo | grep "processor" | wc -l
+$ cat /proc/cpuinfo | grep "processor" | wc -l
 2
+```
+- Cache configuration: number of cache levels, capacity and line size in each level
+```bash
+$ lscpu
+L1d cache:                          32 KiB
+L1i cache:                          32 KiB
+L2 cache:                           512 KiB
+L3 cache:                           32 MiB
+$ getconf LEVEL1_ICACHE_LINESIZE
+64
+$ getconf LEVEL1_DCACHE_LINESIZE
+64
+$ getconf LEVEL2_CACHE_LINESIZE
+64
+$ getconf LEVEL3_CACHE_LINESIZE
+64
+```
+- OS and kernel version  
+Kernel: 6.5.0-1025-azure  
+OS:     Ubuntu 20.04.6 LTS
+
+```bash
+$ uname -a
+Linux codespaces-4bf82d 6.5.0-1025-azure #26~22.04.1-Ubuntu SMP Thu Jul 11 22:33:04 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+$ cat /etc/os-release
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 20.04.6 LTS"
+VERSION_ID="20.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=focal
+UBUNTU_CODENAME=focal
+```
+- GCC version
+```bash
+$ gcc --version
+gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
 ```
