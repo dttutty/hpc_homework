@@ -1,0 +1,5 @@
+Result = 2.64e+09
+
+real	0m1.152s
+user	0m1.028s
+sys	0m0.124s
