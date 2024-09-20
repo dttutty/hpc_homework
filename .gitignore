@@ -4,3 +4,4 @@
 CS7331-master/code_samples/perf/gettimeofday_result/*.txt
 CS7331-master/code_samples/perf/perf_result/*.txt
 CS7331-master/code_samples/perf/time_result/*.txt
+.vscode/
