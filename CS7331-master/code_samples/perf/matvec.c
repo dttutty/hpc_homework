@@ -6,9 +6,9 @@
 
 double mysecond() {
   struct timeval tp;
-  struct timezone tzp;
+  // struct timezone tzp;
   int i;
-  i = gettimeofday(&tp,&tzp);
+  i = gettimeofday(&tp, NULL);
   return ( (double) tp.tv_sec + (double) tp.tv_usec * 1.e-6 );
 }
 
@@ -38,10 +38,9 @@ void display_matrix(const double **matrix, long long N) {
 }
 
 int main(int argc, char *argv[]) {
-  struct timeval start, end;
-  long seconds, useconds;
-  double elapsed;
-  gettimeofday(&start, NULL);
+  
+  double t_all = mysecond();
+
 
   double **matrix;
   double *vec;
@@ -79,16 +78,12 @@ int main(int argc, char *argv[]) {
   for (i = 0; i < n; i++)
     matrix_vector_mult(matrix, vec, result, N, N);
   t0 = (mysecond() - t0) * 1.e3;
-  
+  t_all = (mysecond() - t_all) * 1.e3;
+  // printf("$ ./a.out %s %s\n", argv[1], argv[2]);
+  printf("matrix_vector_mult execution time: %f ms\n", t0);
+  printf("total execution time: %f ms\n", t_all);
+
   printf("Result = %3.2e\n", result[N - 1]);
-
-
-  gettimeofday(&end, NULL);
-
-  seconds  = end.tv_sec  - start.tv_sec;
-  useconds = end.tv_usec - start.tv_usec;
-  elapsed = seconds + useconds / 1000000.0;
-  printf("Elapsed time: %f seconds\n", elapsed);
 
   return 0;
 }
