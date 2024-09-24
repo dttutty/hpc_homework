@@ -104,12 +104,21 @@ Server: Brooks
 Task3: Performance Normalization
 =
 Server: brooks
- - `time` command:  
-![这是图片](img/perf_result_per_flop.png "Magic Gardens")  
-- `gettimeofday()` function:  
-![这是图片](img/gettimeofday_result_per_flop.png "Magic Gardens")  
-- `perf` command:  
-![这是图片](img/gettimeofday_result_per_flop.png "Magic Gardens")
 
-Task4: Analysis with
+ - `time` command:  
+![time_result_per_flop](img/time_result.png)  
+- `gettimeofday()` function:  
+![gettimeofday_result_per_flop](img/gettimeofday_result.png)  
+- `perf` command:  
+![perf_result_per_flop](img/perf_result.png)
+
+Here, I use time per flop for performance  normalization
+ - `time` command:  
+![time_result_per_flop](img/time_result_per_flop.png)  
+- `gettimeofday()` function:  
+![gettimeofday_result_per_flop](img/gettimeofday_result_per_flop.png)  
+- `perf` command:  
+![perf_result_per_flop](img/perf_result_per_flop.png)
+
+Task4: Analysis with `perf`
 =
