@@ -30,17 +30,17 @@ for i in range(arg_try_times):
             for line in file:
                 if line.startswith('real'):
                     real_time = convert_to_seconds(line.split()[1])
-                    real_times[i].append(real_time/flops)
+                    real_times[i].append(real_time)
                 elif line.startswith('user'):
                     user_time = convert_to_seconds(line.split()[1])
-                    user_times[i].append(user_time/flops)
+                    user_times[i].append(user_time)
                 elif line.startswith('sys'):
                     sys_time = convert_to_seconds(line.split()[1])
-                    sys_times[i].append(sys_time/flops)
+                    sys_times[i].append(sys_time)
 
-real_mean = np.mean(real_times, axis=1)*1000*1000
-user_mean = np.mean(user_times, axis=1)*1000*1000
-sys_mean = np.mean(sys_times, axis=1)*1000*1000
+real_mean = np.mean(real_times, axis=1)*1000
+user_mean = np.mean(user_times, axis=1)*1000
+sys_mean = np.mean(sys_times, axis=1)*1000
 
 
 n_values = np.arange(500, 10001, 500)
@@ -52,7 +52,7 @@ plt.plot(n_values, sys_mean, marker='o', linestyle='-', color='yellow', label='s
 
 # 设置坐标轴标签和标题
 plt.xlabel('N')
-plt.ylabel('Time Duration (us)')
+plt.ylabel('Time Duration (ms)')
 plt.title('measured by `time` command')
 
 # 添加网格线
@@ -62,5 +62,5 @@ plt.grid(True, linestyle='--', alpha=0.7)
 plt.legend()
 
 # 显示图形
-plt.savefig(os.path.join(root_dir,f"result_per_flop.png"))
+plt.savefig(os.path.join(root_dir,f"time_result.png"))
 # name = r"$\bar{x}$"
