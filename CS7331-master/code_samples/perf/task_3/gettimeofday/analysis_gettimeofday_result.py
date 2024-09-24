@@ -27,6 +27,7 @@ for i in range(arg_try_times):
         with open(os.path.join(root_dir,sub_dir,f"N={n}.txt"), 'r') as file:
             content = file.read()
             flops = 2 * n**2
+            flops = 1
             matrix_pattern = re.compile(r'matrix_vector_mult execution time: ([\d.]+) ms')
             matrix_match = matrix_pattern.search(content)
             matrix_matchs[i].append(float(matrix_match.group(1))/flops)
@@ -34,8 +35,8 @@ for i in range(arg_try_times):
             total_match = total_pattern.search(content)
             total_matchs[i].append(float(total_match.group(1))/flops)
 
-matrix_matchs = np.mean(matrix_matchs, axis=1)*1000
-total_matchs = np.mean(total_matchs, axis=1)*1000
+matrix_matchs = np.mean(matrix_matchs, axis=1)
+total_matchs = np.mean(total_matchs, axis=1)
 
 n_values = np.arange(500, 10001, 500)
 
@@ -44,8 +45,8 @@ plt.plot(n_values, total_matchs, marker='o', linestyle='-', color='blue', label=
 
 # 设置坐标轴标签和标题
 plt.xlabel('N')
-plt.ylabel('Time Duration (us)')
-plt.title('measured by `perf` command')
+plt.ylabel('Time Duration (ms)')
+plt.title('measured by gettimeofday() function')
 
 # 添加网格线
 plt.grid(True, linestyle='--', alpha=0.7)
