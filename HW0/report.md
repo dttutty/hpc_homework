@@ -61,7 +61,7 @@ $ gcc --version
 gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
 ```
 
-Measurement: Precision and Accuracy
+Task3: Measurement: Precision and Accuracy
 =
 Server: Brooks
 - Execution time measured by bash builtin command: `time`
@@ -98,3 +98,18 @@ Server: Brooks
 2. Which method would you choose? Why?
 3. What is effect of input size on measurement accuracy?
 4. Is there any value to repeating the computation for measurement precision and accuracy?
+
+
+
+Task3: Performance Normalization
+=
+Server: brooks
+ - `time` command:  
+![这是图片](img/perf_result_per_flop.png "Magic Gardens")  
+- `gettimeofday()` function:  
+![这是图片](img/gettimeofday_result_per_flop.png "Magic Gardens")  
+- `perf` command:  
+![这是图片](img/gettimeofday_result_per_flop.png "Magic Gardens")
+
+Task4: Analysis with
+=
