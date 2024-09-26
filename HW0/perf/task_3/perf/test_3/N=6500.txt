@@ -1,0 +1,24 @@
+matrix_vector_mult execution time: 13831.809044 ms
+total execution time: 14171.931982 ms
+Result = 1.69e+09
+
+ Performance counter stats for './a.out 6500 100':
+
+         14,175.25 msec task-clock                #    1.000 CPUs utilized          
+             1,425      context-switches          #    0.101 K/sec                  
+                 0      cpu-migrations            #    0.000 K/sec                  
+            82,639      page-faults               #    0.006 M/sec                  
+    52,261,281,022      cycles                    #    3.687 GHz                      (83.33%)
+        53,582,901      stalled-cycles-frontend   #    0.10% frontend cycles idle     (83.33%)
+        30,202,189      stalled-cycles-backend    #    0.06% backend cycles idle      (83.33%)
+    88,460,419,171      instructions              #    1.69  insn per cycle         
+                                                  #    0.00  stalled cycles per insn  (83.33%)
+     5,026,398,245      branches                  #  354.590 M/sec                    (83.33%)
+         1,286,701      branch-misses             #    0.03% of all branches          (83.35%)
+
+      14.180974464 seconds time elapsed
+
+      14.100202000 seconds user
+       0.071960000 seconds sys
+
+

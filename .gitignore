@@ -1,5 +1,4 @@
 *.zip
 *.pdf
 *.out
-CS7331-master/code_samples/perf/**/*.txt
 .vscode/

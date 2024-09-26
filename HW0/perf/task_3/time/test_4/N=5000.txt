@@ -1,0 +1,7 @@
+matrix_vector_mult execution time: 8161.117077 ms
+total execution time: 8375.590086 ms
+Result = 1.30e+09
+
+real	0m8.383s
+user	0m8.341s
+sys	0m0.040s

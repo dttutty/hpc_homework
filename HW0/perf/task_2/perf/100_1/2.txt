@@ -1,0 +1,28 @@
+matrix_vector_mult execution time: 0.037909 ms
+total execution time: 0.212908 ms
+Result = 2.31e+07
+
+ Performance counter stats for './a.out 100 1':
+
+              0.63 msec task-clock                #    0.653 CPUs utilized          
+                 0      context-switches          #    0.000 K/sec                  
+                 0      cpu-migrations            #    0.000 K/sec                  
+                76      page-faults               #    0.120 M/sec                  
+         1,956,095      cycles                    #    3.081 GHz                    
+            19,475      stalled-cycles-frontend   #    1.00% frontend cycles idle   
+           166,964      stalled-cycles-backend    #    8.54% backend cycles idle    
+         1,876,238      instructions              #    0.96  insn per cycle         
+                                                  #    0.09  stalled cycles per insn
+           352,971      branches                  #  555.895 M/sec                  
+     <not counted>      branch-misses                                                 (0.00%)
+
+       0.000971785 seconds time elapsed
+
+       0.001014000 seconds user
+       0.000000000 seconds sys
+
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
