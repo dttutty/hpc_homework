@@ -66,7 +66,8 @@ gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
 ## Task 2: Measurement: Precision and Accuracy
 Server: Brooks
 
-- Execution time measured by bash builtin command: `time`
+- Execution time measured by bash builtin command: `time`  
+
 <!-- | unit: `ms`| N=100, n=1 | N=100, n=10000 | N=1000, n=1000 | N=10000, n=1 |
 |--|--|--|--|--|
 | Real time| $\bar{x}$=1.6, $\sigma$=1.8| $\bar{x}$=338.2, $\sigma$=4.9| $\bar{x}$=3273.1, $\sigma$=5.2| $\bar{x}$=1138.6, $\sigma$=7.4|
@@ -74,7 +75,8 @@ Server: Brooks
 |Sys time| $\bar{x}$= 0.1, $\sigma$=0.3| $\bar{x}$= 0.8, $\sigma$=1.6| $\bar{x}$= 4.4, $\sigma$=2.8| $\bar{x}$= 131.6, $\sigma$=15.6| -->
 ![](hw0_code/task_2/time/plot.png)
 
-- Execution time measured by C function: `getitmeofday()`
+- Execution time measured by C function: `getitmeofday()`  
+
 <!-- 
 | unit: `ms` | N=100, n=1 | N=100, n=10000 | N=1000, n=1000 | N=10000, n=1 |
 |--|--|--|--|--|
@@ -83,7 +85,7 @@ Server: Brooks
 
 ![](hw0_code/task_2/gettimeofday/plot.png)
 
-- Execution time measured by `perf`
+- Execution time measured by `perf`  
 
 <!-- | unit: ms | N=100, n=1 | N=100, n=10000 | N=1000, n=1000 | N=10000, n=1 |
 |--|--|--|--|--|
