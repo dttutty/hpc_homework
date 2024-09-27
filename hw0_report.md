@@ -106,7 +106,7 @@ My choice would be perf because the command is simple to use, and it provides va
 3. **What is effect of input size on measurement accuracy?**  
 As the input size increases, the measurement accuracy tends to decrease. Larger input sizes lead to longer execution times, during which more system-level events, such as background processes or CPU scheduling, can interfere with the measurement. When the matrix becomes too large to fit in the cache, cache misses occur, slowing down the computation and adding further variability to the results. Additionally, methods like `time` and `perf` might capture more unrelated system activities, further impacting accuracy.
 
-4. **Is there any value to repeating the computation for measurement precision and accuracy?**
+4. **Is there any value to repeating the computation for measurement precision and accuracy?**  
 Yes, repeating the computation improves precision and accuracy by reducing random variability and accounting for system-level interference.
 
 
@@ -122,13 +122,13 @@ Measurement tool: `perf`
 
 1. **What can we say about performance scalability of matrix-vector multiplication?**  
 The performance scalability of matrix-vector multiplication depends on several factors, such as matrix size, hardware capabilities, and memory access patterns. As the matrix size grows, the computation becomes more intensive, and performance may degrade due to increased memory access time, especially when the matrix exceeds the cache size, leading to cache misses. This can slow down the process significantly.  
-As the input size increases, the computation time also increases (as expected). However, what we are more concerned with is the variation in execution time for a fixed number of FLOPs, or the execution time per flop, as this is the key metric for evaluating performance scalability.
+As the input size increases, the computation time also increases (as expected). However, what we are more concerned with is the variation in execution time for a fixed number of FLOPs, or the execution time per FLOP, as this is the key metric for evaluating performance scalability.
 
-- Time duration per flop  
-![](hw0_code/task_3/perf/result_by_flop.png)  
+- Time duration per FLOP  
+![](hw0_code/task_3/perf/result_by_FLOP.png)  
 
 2. **What can we say about performance scalability of matrix-vector multiplication using this new metric?**  
-I designed a new metric, which is the **execution time per flop**. Here, I roughly estimate the total FLOPs as 2N^2. It can be observed that for N=1000 compared to N=500, the time per flop decreases significantly. Between N=1000 and N=2000, there is a slow decline, and after N=2000, it remains almost unchanged. I believe that the reason for the time reduction when N < 2000 is that the overhead related to initialization (such as reading from the hard drive and loading the program into cache) is relatively fixed, and as N increases, this initialization overhead is amortized.  
+I designed a new metric, which is the **execution time per FLOP**. Here, I roughly estimate the total FLOPs as 2N^2. It can be observed that for N=1000 compared to N=500, the time per FLOP decreases significantly. Between N=1000 and N=2000, there is a slow decline, and after N=2000, it remains almost unchanged. I believe that the reason for the time reduction when N < 2000 is that the overhead related to initialization (such as reading from the hard drive and loading the program into cache) is relatively fixed, and as N increases, this initialization overhead is amortized.  
 The fact that the graph remains mostly unchanged indicates that the matrix-vector program demonstrates good performance scalability for N < 10000.
 
 ## Task4: Analysis with `perf`  
@@ -137,7 +137,7 @@ The fact that the graph remains mostly unchanged indicates that the matrix-vecto
 
 1. **Which version of the code is performing better?**  
 The binary file generated with the `O3` optimization level is performing better.
-- Time duration per flop  
+- Time duration per FLOP  
 ![](hw0_code/task_4/perf/result.png)  
 
 2. **Which areas of performance saw an improvement?**  
@@ -153,10 +153,10 @@ The performance analysis using perf reveals several factors contributing to O3's
 - Insight Figure 1: cache miss rate at each level  
 ![](hw0_code/task_4/perf/percentage_metrics.png)  
 
-- Insight Figure 2: instructions count per flop  
+- Insight Figure 2: instructions count per FLOP  
 ![](hw0_code/task_4/perf/instructions_counts.png)  
 
-- Insight Figure 3: page fault count per kflops  
+- Insight Figure 3: page fault count per kFLOPs  
 ![](hw0_code/task_4/perf/page_fault_counts.png)  
 
 - Insight Figure 4: cpu migrations count per execution  
