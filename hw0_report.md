@@ -125,7 +125,7 @@ The performance scalability of matrix-vector multiplication depends on several f
 As the input size increases, the computation time also increases (as expected). However, what we are more concerned with is the variation in execution time for a fixed number of FLOPs, or the execution time per FLOP, as this is the key metric for evaluating performance scalability.
 
 - Time duration per FLOP  
-![](hw0_code/task_3/perf/result_by_FLOP.png)  
+![](hw0_code/task_3/perf/result_by_flop.png)  
 
 2. **What can we say about performance scalability of matrix-vector multiplication using this new metric?**  
 I designed a new metric, which is the **execution time per FLOP**. Here, I roughly estimate the total FLOPs as 2N^2. It can be observed that for N=1000 compared to N=500, the time per FLOP decreases significantly. Between N=1000 and N=2000, there is a slow decline, and after N=2000, it remains almost unchanged. I believe that the reason for the time reduction when N < 2000 is that the overhead related to initialization (such as reading from the hard drive and loading the program into cache) is relatively fixed, and as N increases, this initialization overhead is amortized.  
