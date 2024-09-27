@@ -116,12 +116,15 @@ Yes, repeating the computation improves precision and accuracy by reducing rando
 
 Measurement tool: `perf`  
 
+
+- Time duration per execution  
 ![](hw0_code/task_3/perf/result.png)  
 
 1. **What can we say about performance scalability of matrix-vector multiplication?**  
 The performance scalability of matrix-vector multiplication depends on several factors, such as matrix size, hardware capabilities, and memory access patterns. As the matrix size grows, the computation becomes more intensive, and performance may degrade due to increased memory access time, especially when the matrix exceeds the cache size, leading to cache misses. This can slow down the process significantly.  
 As the input size increases, the computation time also increases (as expected). However, what we are more concerned with is the variation in execution time for a fixed number of FLOPs, or the execution time per flop, as this is the key metric for evaluating performance scalability.
 
+- Time duration per flop  
 ![](hw0_code/task_3/perf/result_by_flop.png)  
 
 2. **What can we say about performance scalability of matrix-vector multiplication using this new metric?**  
@@ -134,7 +137,8 @@ The fact that the graph remains mostly unchanged indicates that the matrix-vecto
 
 1. **Which version of the code is performing better?**  
 The binary file generated with the `O3` optimization level is performing better.
-- ![](hw0_code/task_4/perf/result.png)  
+- Time duration per flop  
+![](hw0_code/task_4/perf/result.png)  
 
 2. **Which areas of performance saw an improvement?**  
 
