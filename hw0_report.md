@@ -125,7 +125,7 @@ As the input size increases, the computation time also increases (as expected). 
 ![](hw0_code/task_3/perf/result_by_flop.png)  
 
 2. **What can we say about performance scalability of matrix-vector multiplication using this new metric?**  
-I designed a new metric, which is the execution time per flop. Here, I roughly estimate the total FLOPs as 2N^2. It can be observed that for N=1000 compared to N=500, the time per flop decreases significantly. Between N=1000 and N=2000, there is a slow decline, and after N=2000, it remains almost unchanged. I believe that the reason for the time reduction when N < 2000 is that the overhead related to initialization (such as reading from the hard drive and loading the program into cache) is relatively fixed, and as N increases, this initialization overhead is amortized.  
+I designed a new metric, which is the **execution time per flop**. Here, I roughly estimate the total FLOPs as 2N^2. It can be observed that for N=1000 compared to N=500, the time per flop decreases significantly. Between N=1000 and N=2000, there is a slow decline, and after N=2000, it remains almost unchanged. I believe that the reason for the time reduction when N < 2000 is that the overhead related to initialization (such as reading from the hard drive and loading the program into cache) is relatively fixed, and as N increases, this initialization overhead is amortized.  
 The fact that the graph remains mostly unchanged indicates that the matrix-vector program demonstrates good performance scalability for N < 10000.
 
 ## Task4: Analysis with `perf`  
