@@ -126,6 +126,33 @@ As the input size increases, the computation time also increases (as expected). 
 I designed a new metric, which is the execution time per flop. Here, I roughly estimate the total FLOPs as \( 2N^2 \). It can be observed that for N=1000 compared to N=500, the time per flop decreases significantly. Between N=1000 and N=2000, there is a slow decline, and after N=2000, it remains almost unchanged. I believe that the reason for the time reduction when N < 2000 is that the overhead related to initialization (such as reading from the hard drive and loading the program into cache) is relatively fixed, and as N increases, this initialization overhead is amortized.  
 The fact that the graph remains mostly unchanged indicates that the matrix-vector program demonstrates good performance scalability for N < 10000.
 
-## Task4: Analysis with `perf`
+## Task4: Analysis with `perf`  
 
-![](hw0_code/task_4/perf/result.png)  
+
+
+1. **Which version of the code is performing better?**  
+The binary file generated with the `O3` optimization level is performing better.
+- ![](hw0_code/task_4/perf/result.png)  
+
+2. **Which areas of performance saw an improvement?**  
+
+The performance analysis of different compilation optimization levels (O0 and O3) using perf reveals several factors contributing to O3's faster execution:
+
+**Instruction Count is the main contribution**: `O3` reduces the total instructions executed, improving efficiency by eliminating redundant instructions.
+
+**L1 instruction cache miss rate contribute a little when N>1000**: `O3` lowers the L1 instruction cache miss rate slightly.
+
+**L1 Data Cache Miss Rate increases under O3 optimization, L1 Cache is a bottleneck for the `O3` optimized code**: `O3` optimizations(Loop unrolling and function inlining) reduce branch instructions, meantime lead to **poor locality and higher cache pressure**, especially if loop bodies grow too large and exceed the L1 cache's capacity. What's more, `O3` optimized code runs faster and more compactly, this can **increase memory bandwidth demands**. If L1 cache bandwidth can't keep up, the L1-dcache miss rate may rise.
+
+****
+- Insight Figure 1: cache miss rate at each level  
+![](hw0_code/task_4/perf/percentage_metrics.png)  
+
+- Insight Figure 2: instructions count per flop  
+![](hw0_code/task_4/perf/instructions_counts.png)  
+
+- Insight Figure 3: page fault count per kflops  
+![](hw0_code/task_4/perf/page_fault_counts.png)  
+
+- Insight Figure 4: cpu migrations count per execution  
+![](hw0_code/task_4/perf/cpu_migrations_counts.png)
