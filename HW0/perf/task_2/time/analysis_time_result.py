@@ -2,7 +2,7 @@ import os
 import re
 import numpy as np
 
-dir = '/home/Students/sqp17/hpc_homework/CS7331-master/code_samples/perf/time_result/10000_1'
+dir = 'HW0/perf/task_2/time/100_1'
 txt_files = [f for f in os.listdir(dir) if f.endswith('.txt')]
 
 real_times = []
