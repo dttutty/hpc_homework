@@ -1,0 +1,29 @@
+matrix_vector_mult execution time: 32904.927015 ms
+total execution time: 33697.814941 ms
+Result = 2.64e+09
+
+ Performance counter stats for '../../O0.out 10000 100':
+
+           358,023      L1-icache-load-misses     #    0.43% of all L1-icache hits    (45.44%)
+        83,878,996      L1-icache-loads                                               (45.46%)
+        76,646,623      cache-misses              #    1.922 % of all cache refs      (45.47%)
+     3,986,875,505      cache-references                                              (45.47%)
+    63,010,501,534      L1-dcache-loads                                               (45.47%)
+     2,572,014,842      L1-dcache-load-misses     #    4.08% of all L1-dcache hits    (45.47%)
+   <not supported>      LLC-loads                                                   
+   <not supported>      LLC-load-misses                                             
+   210,486,991,557      instructions                                                
+                                                  #    0.00  stalled cycles per insn  (45.46%)
+       126,073,893      stalled-cycles-frontend                                       (45.44%)
+        69,856,281      stalled-cycles-backend    #    0.00% backend cycles idle      (45.44%)
+    12,129,835,319      branches                                                      (45.44%)
+         2,331,298      branch-misses             #    0.02% of all branches          (45.44%)
+           195,467      page-faults                                                 
+                 0      cpu-migrations                                              
+
+      33.714574182 seconds time elapsed
+
+      33.563596000 seconds user
+       0.131919000 seconds sys
+
+

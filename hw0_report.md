@@ -1,7 +1,9 @@
 
+# HPC Homework 0
 
-Experimental Environment
-=
+Lei Zhao
+
+## Task 1: Experimental Environment
 Platform: Github Workspace
 
 - Host name
@@ -61,9 +63,9 @@ $ gcc --version
 gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
 ```
 
-Task2: Measurement: Precision and Accuracy
-=
+## Task 2: Measurement: Precision and Accuracy
 Server: Brooks
+
 - Execution time measured by bash builtin command: `time`
 <!-- | unit: `ms`| N=100, n=1 | N=100, n=10000 | N=1000, n=1000 | N=10000, n=1 |
 |--|--|--|--|--|
@@ -93,49 +95,37 @@ Server: Brooks
 
 
 
-- What do the numbers say about the precision and accuracy of the measurement methods?
-      - Common characteristic: the precision of all methods are degrading with the increase of matrix size and number of repeatation.
-      - `time` command: 
-     those experiment with less repeat times(n=1) have larger standard deviation, the more repeat times, the smaller standard deviation is.
-      - `gettimeofday()` function: have the lowest standard deviation on (N=100, n=1)
-      - precision: the stand devation also increase with the increase of matrix size.
-      - standard deviation is smaller than other measurement method, high precision is demostrated
-      - `perf` command: the precision is the worst on large size matrix(N=10000, n=1
-).
+1. **What do the numbers say about the precision and accuracy of the measurement methods?**  
+ `gettimeofday()` offers the highest precision and accuracy, particularly for small tasks, as it isolates and measures the execution time of specific functions. `Perf` provides good system-level precision and accuracy but includes some overhead. `time` has the lowest precision and accuracy, as it captures overall system performance, including unrelated tasks.
 
-      - the best accuracy can be seen on `gettimeofday()` function as it's measuring the run time of specific function, and nontrival distrub can be isolated. This phoenomenon is obvious on small size computation. 
+2. **Which method would you choose? Why?**  
+My choice would be perf because the command is simple to use, and it provides various metrics that help me understand the reasons for performance degradation.
 
-||Precision|Accuracy|
-|--|--|--|
-|`time`| ||
-|`gettimeofday()`|the precision of `time` command result is degrading with the increase of input size. ||
-|`perf`|the precision of `time` command result is degrading with the increase of input size. ||
-2. Which method would you choose? Why?
-3. What is effect of input size on measurement accuracy?
-4. Is there any value to repeating the computation for measurement precision and accuracy?
+3. **What is effect of input size on measurement accuracy?**  
+As the input size increases, the measurement accuracy tends to decrease. Larger input sizes lead to longer execution times, during which more system-level events, such as background processes or CPU scheduling, can interfere with the measurement. When the matrix becomes too large to fit in the cache, cache misses occur, slowing down the computation and adding further variability to the results. Additionally, methods like `time` and `perf` might capture more unrelated system activities, further impacting accuracy.
+
+4. **Is there any value to repeating the computation for measurement precision and accuracy?**
+Yes, repeating the computation improves precision and accuracy by reducing random variability and accounting for system-level interference.
 
 
 
-Task3: Performance Normalization
-=
-Server: brooks
-|`time` command:  |`gettimeofday()` function|`perf` command|
-|--|--|--|
-|![](hw0_code/task_3/time/result.png)  |![](hw0_code/task_3/gettimeofday/result.png)  |![](hw0_code/task_3/perf/result.png)|
 
+## Task3: Performance Normalization
 
-|`time` command:  |`gettimeofday()` function|`perf` command|
-|--|--|--|
-|![](hw0_code/task_3/time/result_by_flop.png)  |![](hw0_code/task_3/gettimeofday/result_by_flop.png)  |![](hw0_code/task_3/perf/result_by_flop.png)|
+Measure tool: `perf`  
 
+![](hw0_code/task_3/perf/result.png)  
 
-Here, I use time per flop for performance  normalization
- - `time` command:  
+1. **What can we say about performance scalability of matrix-vector multiplication?**  
+The performance scalability of matrix-vector multiplication depends on several factors, such as matrix size, hardware capabilities, and memory access patterns. As the matrix size grows, the computation becomes more intensive, and performance may degrade due to increased memory access time, especially when the matrix exceeds the cache size, leading to cache misses. This can slow down the process significantly.  
+As the input size increases, the computation time also increases (as expected). However, what we are more concerned with is the variation in execution time for a fixed number of FLOPs, or the execution time per flop, as this is the key metric for evaluating performance scalability.
 
-- `gettimeofday()` function:  
+![](hw0_code/task_3/perf/result_by_flop.png)  
 
-- `perf` command:  
+2. **What can we say about performance scalability of matrix-vector multiplication using this new metric?**  
+I designed a new metric, which is the execution time per flop. Here, I roughly estimate the total FLOPs as \( 2N^2 \). It can be observed that for N=1000 compared to N=500, the time per flop decreases significantly. Between N=1000 and N=2000, there is a slow decline, and after N=2000, it remains almost unchanged. I believe that the reason for the time reduction when N < 2000 is that the overhead related to initialization (such as reading from the hard drive and loading the program into cache) is relatively fixed, and as N increases, this initialization overhead is amortized.  
+The fact that the graph remains mostly unchanged indicates that the matrix-vector program demonstrates good performance scalability for N < 10000.
 
+## Task4: Analysis with `perf`
 
-Task4: Analysis with `perf`
-=
+![](hw0_code/task_4/perf/result.png)  
