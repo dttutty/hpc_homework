@@ -114,7 +114,7 @@ Yes, repeating the computation improves precision and accuracy by reducing rando
 
 ## Task3: Performance Normalization
 
-Measure tool: `perf`  
+Measurement tool: `perf`  
 
 ![](hw0_code/task_3/perf/result.png)  
 
