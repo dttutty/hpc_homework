@@ -136,15 +136,14 @@ The binary file generated with the `O3` optimization level is performing better.
 
 2. **Which areas of performance saw an improvement?**  
 
-The performance analysis of different compilation optimization levels (O0 and O3) using perf reveals several factors contributing to O3's faster execution:
+The performance analysis using perf reveals several factors contributing to O3's faster execution:
 
 **Instruction Count is the main contribution**: `O3` reduces the total instructions executed, improving efficiency by eliminating redundant instructions.
 
-**L1 instruction cache miss rate contribute a little when N>1000**: `O3` lowers the L1 instruction cache miss rate slightly.
-
 **L1 Data Cache Miss Rate increases under O3 optimization, L1 Cache is a bottleneck for the `O3` optimized code**: `O3` optimizations(Loop unrolling and function inlining) reduce branch instructions, meantime lead to **poor locality and higher cache pressure**, especially if loop bodies grow too large and exceed the L1 cache's capacity. What's more, `O3` optimized code runs faster and more compactly, this can **increase memory bandwidth demands**. If L1 cache bandwidth can't keep up, the L1-dcache miss rate may rise.
 
-****
+**Summary**: LLC-loads and LLC-load-misses are unavailable on  brooks (CPU: AMD EPYC 7v13). However, the server provides cache-misses data, which includes the sum of all cache-misses from L1, L2, and L3 caches. It can be observed that when comparing `O0` and `O3` optimization levels, the differences of cache miss rate, L1-icache miss rate, branch miss rate, and page fault count are all quite small. The probability of CPU migrations per execution is negligible under both optimization levels. The advantage of the reduced instruction count outweighs the disadvantage of the increase in L1 data cache miss rate, which is why the code with `O3` optimization executes faster.
+
 - Insight Figure 1: cache miss rate at each level  
 ![](hw0_code/task_4/perf/percentage_metrics.png)  
 
