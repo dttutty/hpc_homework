@@ -1,4 +1,5 @@
 *.zip
 *.pdf
 *.out
+*.txt
 .vscode/
