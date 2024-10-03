@@ -73,7 +73,7 @@ Server: Brooks
 | Real time| $\bar{x}$=1.6, $\sigma$=1.8| $\bar{x}$=338.2, $\sigma$=4.9| $\bar{x}$=3273.1, $\sigma$=5.2| $\bar{x}$=1138.6, $\sigma$=7.4|
 | User time| $\bar{x}$= 0.9, $\sigma$=0.3| $\bar{x}$= 337.2, $\sigma$=5.8| $\bar{x}$= 3268.1, $\sigma$=5.9| $\bar{x}$= 1006.8, $\sigma$=13.9|
 |Sys time| $\bar{x}$= 0.1, $\sigma$=0.3| $\bar{x}$= 0.8, $\sigma$=1.6| $\bar{x}$= 4.4, $\sigma$=2.8| $\bar{x}$= 131.6, $\sigma$=15.6| -->
-![](hw0_code/task_2/time/plot.png)
+![](task_2/time/plot.png)
 
 - Execution time measured by C function: `getitmeofday()`  
 
@@ -83,7 +83,7 @@ Server: Brooks
 |`Matrix_vector_mult()` execution time| $\bar{x}$=0.0605585, $\sigma$=0.0165303 | $\bar{x}$=392.7667616, $\sigma$=5.0062123 | $\bar{x}$=3895.9326031, $\sigma$=16.7790822 | $\bar{x}$=326.9620180, $\sigma$=2.4586872|
 |`main()` execution time|$\bar{x}$=0.2638577, $\sigma$=0.0586828| $\bar{x}$=392.9192068, $\sigma$=5.0025366|$\bar{x}$=3908.1603289, $\sigma$=16.9117782|$\bar{x}$=1121.0340977, $\sigma$=3.5908434| -->
 
-![](hw0_code/task_2/gettimeofday/plot.png)
+![](task_2/gettimeofday/plot.png)
 
 - Execution time measured by `perf`  
 
@@ -93,7 +93,7 @@ Server: Brooks
 |user|$\bar{x}$=0.9106000, $\sigma$=0.3217832|$\bar{x}$=394.1294000, $\sigma$=5.0185379|$\bar{x}$=3903.2827000, $\sigma$=14.0676060|$\bar{x}$=999.5430000, $\sigma$=30.5616751|
 |sys|$\bar{x}$=0.0565000, $\sigma$=0.1695000|$\bar{x}$=0.3978000, $\sigma$=1.1934000|$\bar{x}$=3.5968000, $\sigma$=4.1711241|$\bar{x}$=154.2028000, $\sigma$=28.5064551| -->
 
-![](hw0_code/task_2/perf/plot.png)
+![](task_2/perf/plot.png)
 
 
 
@@ -118,14 +118,14 @@ Measurement tool: `perf`
 
 
 - Time duration per execution  
-![](hw0_code/task_3/perf/result.png)  
+![](task_3/perf/result.png)  
 
 1. **What can we say about performance scalability of matrix-vector multiplication?**  
 The performance scalability of matrix-vector multiplication depends on several factors, such as matrix size, hardware capabilities, and memory access patterns. As the matrix size grows, the computation becomes more intensive, and performance may degrade due to increased memory access time, especially when the matrix exceeds the cache size, leading to cache misses. This can slow down the process significantly.  
 As the input size increases, the computation time also increases (as expected). However, what we are more concerned with is the variation in execution time for a fixed number of FLOPs, or the execution time per FLOP, as this is the key metric for evaluating performance scalability.
 
 - Time duration per FLOP  
-![](hw0_code/task_3/perf/result_by_flop.png)  
+![](task_3/perf/result_by_flop.png)  
 
 2. **What can we say about performance scalability of matrix-vector multiplication using this new metric?**  
 I designed a new metric, which is the **execution time per FLOP**. Here, I roughly estimate the total FLOPs as 2N^2. It can be observed that for N=1000 compared to N=500, the time per FLOP decreases significantly. Between N=1000 and N=2000, there is a slow decline, and after N=2000, it remains almost unchanged. I believe that the reason for the time reduction when N < 2000 is that the overhead related to initialization (such as reading from the hard drive and loading the program into cache) is relatively fixed, and as N increases, this initialization overhead is amortized.  
@@ -138,7 +138,7 @@ The fact that the graph remains mostly unchanged indicates that the matrix-vecto
 1. **Which version of the code is performing better?**  
 The binary file generated with the `O3` optimization level is performing better.
 - Time duration per FLOP  
-![](hw0_code/task_4/perf/result.png)  
+![](task_4/perf/result.png)  
 
 2. **Which areas of performance saw an improvement?**  
 
@@ -151,13 +151,13 @@ The performance analysis using perf reveals several factors contributing to O3's
 **Summary**: LLC-loads and LLC-load-misses are unavailable on  brooks (CPU: AMD EPYC 7v13). However, the server provides cache-misses data, which includes the sum of all cache-misses from L1, L2, and L3 caches. It can be observed that when comparing `O0` and `O3` optimization levels, the differences of cache miss rate, L1-icache miss rate, branch miss rate, and page fault count are all quite small. The probability of CPU migrations per execution is negligible under both optimization levels. The advantage of the reduced instruction count outweighs the disadvantage of the increase in L1 data cache miss rate, which is why the code with `O3` optimization executes faster.
 
 - Insight Figure 1: cache miss rate at each level  
-![](hw0_code/task_4/perf/percentage_metrics.png)  
+![](task_4/perf/percentage_metrics.png)  
 
 - Insight Figure 2: instructions count per FLOP  
-![](hw0_code/task_4/perf/instructions_counts.png)  
+![](task_4/perf/instructions_counts.png)  
 
 - Insight Figure 3: page fault count per kFLOPs  
-![](hw0_code/task_4/perf/page_fault_counts.png)  
+![](task_4/perf/page_fault_counts.png)  
 
 - Insight Figure 4: cpu migrations count per execution  
-![](hw0_code/task_4/perf/cpu_migrations_counts.png)
+![](task_4/perf/cpu_migrations_counts.png)
