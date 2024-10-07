@@ -53,8 +53,8 @@ int main(int argc, char *argv[]) {
     exit(0);    // 退出程序
   }
 
-  long long N = atoi(argv[1]);  // 将第一个参数转换为整数N
-  unsigned n = atoi(argv[2]);   // 将第二个参数转换为整数n
+  long long N = atoll(argv[1]);  // 将第一个参数转换为整数N
+  unsigned n = (unsigned)atoi(argv[2]);   // 将第二个参数转换为整数n
   int i, j;                     // 定义循环变量i和j
 
   matrix = (double **) malloc(sizeof(double *) * N);  // 分配矩阵行指针数组
