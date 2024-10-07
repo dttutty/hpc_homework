@@ -4,21 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        //python debug configuration
+        
+        // gbd launch configuration with no arg
         {
-            "name": "Python: Current File",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        },
-        // gbd launch configuration
-        {
-            "name": "gdb - Build and debug active file",
+            "name": "gdb - no arg",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}.out",
-            "args": ["${input:arg_1}", "${input:arg_2}"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -33,18 +25,38 @@
             ],
             "preLaunchTask": "C/C++: gcc build active file",
             "miDebuggerPath": "/usr/bin/gdb"
-        }
+        },
+        // gbd launch configuration with no arg
+        {
+            "name": "gdb - make",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/../bin/${fileBasenameNoExtension}.${input:_VERSIONs}",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "make",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
     ],
     "inputs": [
         {
-            "id": "arg_1",  // 用于输入 N 的参数
-            "type": "promptString",
-            "description": "Enter the arg_1"
+            "id": "_VERSIONs",        // 定义输入 ID
+            "type": "pickString",      // 使用下拉选择框
+            "description": "Select _VERSIONs", // 提示用户选择
+            "options": [               // 预定义选项
+                "S","W","A","B","C","D","E","F"
+            ],
+            "default": "S"           // 默认选项
         },
-        {
-            "id": "arg_2",  // 用于输入重复次数的参数
-            "type": "promptString",
-            "description": "Enter the arg_2"
-        }
     ]
 }

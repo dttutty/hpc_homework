@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.py": "python",
+        "time.h": "c"
+    },
+    "files.insertFinalNewline": true,
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+}
