@@ -36,7 +36,7 @@
                 "CLASS=${input:_VERSIONs}"
             ],         // 如果需要，可以在这里添加 make 的参数
             "options": {
-                "cwd": "${workspaceFolder}/hw1/NPB",  // 设置工作目录为 NPB 目录
+                "cwd": "${workspaceFolder}",  // 设置工作目录为 NPB 目录
             },
             "group": {
                 "kind": "build",

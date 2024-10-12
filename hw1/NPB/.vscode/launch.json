@@ -31,7 +31,7 @@
             "name": "gdb - make",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/../bin/${fileBasenameNoExtension}.${input:_VERSIONs} > output.txt 2>&1",
+            "program": "${fileDirname}/../bin/${fileBasenameNoExtension}.${input:_VERSIONs}",
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
