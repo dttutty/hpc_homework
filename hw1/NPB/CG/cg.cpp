@@ -48,28 +48,28 @@ static double tran;
 
 /* function declarations */
 static void conj_grad(int colidx[], int rowstr[], double x[],
-                      double z[], double a[], double p[], double q[], double r[],
-                      double w[], double *rnorm);
+  double z[], double a[], double p[], double q[], double r[],
+  double w[], double* rnorm);
 static void makea(int n, int nz, double a[], int colidx[], int rowstr[],
-                  int nonzer, int firstrow, int lastrow, int firstcol,
-                  int lastcol, double rcond, int arow[], int acol[],
-                  double aelt[], double v[], int iv[], double shift);
+  int nonzer, int firstrow, int lastrow, int firstcol,
+  int lastcol, double rcond, int arow[], int acol[],
+  double aelt[], double v[], int iv[], double shift);
 static void sparse(double a[], int colidx[], int rowstr[], int n,
-                   int arow[], int acol[], double aelt[],
-                   int firstrow, int lastrow,
-                   double x[], boolean mark[], int nzloc[], int nnza);
+  int arow[], int acol[], double aelt[],
+  int firstrow, int lastrow,
+  double x[], boolean mark[], int nzloc[], int nnza);
 static void sprnvc(int n, int nz, double v[], int iv[], int nzloc[], int mark[]);
 static int icnvrt(double x, int ipwr2);
-static void vecset(int n, double v[], int iv[], int *nzv, int i, double val);
+static void vecset(int n, double v[], int iv[], int* nzv, int i, double val);
 
 /*--------------------------------------------------------------------
       program cg
 --------------------------------------------------------------------*/
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   int i, j, k, it;
-  int nthreads = 100;
+  int nthreads = 64;
   double zeta;
   double rnorm;
   double norm_temp11;
@@ -83,6 +83,11 @@ int main(int argc, char **argv)
   lastrow = NA;
   firstcol = 1;
   lastcol = NA;
+
+  nthreads = argc > 1 ? atoi(argv[1]) : 32;
+  // omp_set_num_threads(nthreads);
+  printf("Using %d threads\n", nthreads);
+  fflush(stdout);
 
   if (NA == 1400 && NONZER == 7 && NITER == 15 && SHIFT == 10.0)
   {
@@ -115,7 +120,7 @@ int main(int argc, char **argv)
   }
 
   printf("\n\n NAS Parallel Benchmarks 4.0 OpenMP C++ version"
-         " - CG Benchmark\n");
+    " - CG Benchmark\n");
   printf("\n\n Developed by: Dalvan Griebler <dalvan.griebler@acad.pucrs.br>\n");
   printf(" Size: %10d\n", NA);
   printf(" Iterations: %5d\n", NITER);
@@ -134,8 +139,8 @@ int main(int argc, char **argv)
     c
     c-------------------------------------------------------------------*/
   makea(naa, nzz, a, colidx, rowstr, NONZER,
-        firstrow, lastrow, firstcol, lastcol,
-        RCOND, arow, acol, aelt, v, iv, SHIFT);
+    firstrow, lastrow, firstcol, lastcol,
+    RCOND, arow, acol, aelt, v, iv, SHIFT);
 
   /*---------------------------------------------------------------------
     c  Note: as a result of the above call to makea:
@@ -304,48 +309,42 @@ int main(int argc, char **argv)
   {
     mflops = 0.0;
   }
-  c_print_results((char *)"CG", class_npb, NA, 0, 0, NITER, nthreads, t, mflops, (char *)"          floating point", verified, (char *)NPBVERSION, (char *)COMPILETIME, (char *)CS1, (char *)CS2, (char *)CS3, (char *)CS4, (char *)CS5, (char *)CS6, (char *)CS7);
+  c_print_results((char*)"CG", class_npb, NA, 0, 0, NITER, nthreads, t, mflops, (char*)"          floating point", verified, (char*)NPBVERSION, (char*)COMPILETIME, (char*)CS1, (char*)CS2, (char*)CS3, (char*)CS4, (char*)CS5, (char*)CS6, (char*)CS7);
   return 0;
 }
-
-
 
 /*--------------------------------------------------------------------
   c-------------------------------------------------------------------*/
 static void conj_grad(
-    int colidx[], /* colidx[1:nzz] */
-    int rowstr[], /* rowstr[1:naa+1] */
-    double x[],   /* x[*] */
-    double z[],   /* z[*] */
-    double a[],   /* a[1:nzz] */
-    double p[],   /* p[*] */
-    double q[],   /* q[*] */
-    double r[],   /* r[*] */
-    double w[],   /* w[*] */
-    double *rnorm
-    )
-/*--------------------------------------------------------------------
-  c-------------------------------------------------------------------*/
+  int colidx[], /* colidx[1:nzz] */
+  int rowstr[], /* rowstr[1:naa+1] */
+  double x[],   /* x[*] */
+  double z[],   /* z[*] */
+  double a[],   /* a[1:nzz] */
+  double p[],   /* p[*] */
+  double q[],   /* q[*] */
+  double r[],   /* r[*] */
+  double w[],   /* w[*] */
+  double* rnorm)
+  /*--------------------------------------------------------------------
+    c-------------------------------------------------------------------*/
 
-/*---------------------------------------------------------------------
-  c  Floaging point arrays here are named as in NPB1 spec discussion of
-  c  CG algorithm
-  c---------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------
+      c  Floaging point arrays here are named as in NPB1 spec discussion of
+      c  CG algorithm
+      c---------------------------------------------------------------------*/
 {
   static double d, sum, rho, rho0, alpha, beta;
   int j, k;
   int cgit, cgitmax = 25;
-
-  // new array containing 15 elements to store flags
-  int omp_flags[16] = {0};
-  omp_flags[15] = 1;
 
   rho = 0.0;
 
   /*--------------------------------------------------------------------
     c  Initialize the CG algorithm:
     c-------------------------------------------------------------------*/
-  #pragma omp parallel for if(omp_flags[1])
+
+#pragma omp simd // omp_flags_1_
   for (j = 1; j <= naa + 1; j++)
   {
     q[j] = 0.0;
@@ -355,11 +354,11 @@ static void conj_grad(
     w[j] = 0.0;
   }
 
-/*--------------------------------------------------------------------
-  c  rho = r.r
-  c  Now, obtain the norm of r: First, sum squares of r elements locally...
-  c-------------------------------------------------------------------*/
-  #pragma omp parallel for reduction(+ : rho) if(omp_flags[2])
+  /*--------------------------------------------------------------------
+    c  rho = r.r
+    c  Now, obtain the norm of r: First, sum squares of r elements locally...
+    c-------------------------------------------------------------------*/
+#pragma omp simd reduction(+ : rho) // omp_flags_2_
   for (j = 1; j <= lastcol - firstcol + 1; j++)
   {
     rho = rho + x[j] * x[j];
@@ -370,7 +369,7 @@ static void conj_grad(
     c  The conj grad iteration loop
     c---->
     c-------------------------------------------------------------------*/
-  // if(omp_flags[3])
+// omp_flags_3_ not suitable for parallelization
   for (cgit = 1; cgit <= cgitmax; cgit++)
   {
     rho0 = rho;
@@ -391,11 +390,11 @@ static void conj_grad(
     */
 
     /* rolled version */
-    #pragma omp parallel for private(sum) if(omp_flags[4])
+#pragma omp parallel for private(k, sum) // omp_flags_4_
     for (j = 1; j <= lastrow - firstrow + 1; j++)
     {
       sum = 0.0;
-      // if(omp_flags[5])
+// omp_flags_5_ not suitable for parallelization
       for (k = rowstr[j]; k < rowstr[j + 1]; k++)
       {
         sum = sum + a[k] * p[colidx[k]];
@@ -440,8 +439,8 @@ static void conj_grad(
       }
       w[j] = sum;
       }
-    */
-  #pragma omp parallel for if(omp_flags[6])
+      */
+#pragma omp simd // omp_flags_6_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       q[j] = w[j];
@@ -450,7 +449,7 @@ static void conj_grad(
     /*--------------------------------------------------------------------
       c  Clear w for reuse...
       c-------------------------------------------------------------------*/
-  #pragma omp parallel for if(omp_flags[7])
+#pragma omp simd // omp_flags_7_ #not suitable for parallelization
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       w[j] = 0.0;
@@ -458,8 +457,8 @@ static void conj_grad(
 
     /*--------------------------------------------------------------------
       c  Obtain p.q
-      c-------------------------------------------------------------------*/  
-  #pragma omp parallel for reduction(+:d) if(omp_flags[8])
+      c-------------------------------------------------------------------*/
+#pragma omp simd reduction(+ : d) // omp_flags_8_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       d = d + p[j] * q[j];
@@ -474,7 +473,7 @@ static void conj_grad(
       c  Obtain z = z + alpha*p
       c  and    r = r - alpha*q
       c---------------------------------------------------------------------*/
-  #pragma omp parallel for if(omp_flags[9])
+#pragma omp simd // omp_flags_9_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       z[j] = z[j] + alpha * p[j];
@@ -485,7 +484,7 @@ static void conj_grad(
       c  rho = r.r
       c  Now, obtain the norm of r: First, sum squares of r elements locally...
       c---------------------------------------------------------------------*/
-  #pragma omp parallel for reduction(+:rho) if(omp_flags[10])
+#pragma omp simd reduction(+ : rho) // omp_flags_10_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       rho = rho + r[j] * r[j];
@@ -499,7 +498,7 @@ static void conj_grad(
     /*--------------------------------------------------------------------
       c  p = r + beta*p
       c-------------------------------------------------------------------*/
-  #pragma omp parallel for if(omp_flags[11])
+#pragma omp simd // omp_flags_11_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       p[j] = r[j] + beta * p[j];
@@ -513,11 +512,12 @@ static void conj_grad(
     c---------------------------------------------------------------------*/
   sum = 0.0;
 
-#pragma omp parallel for private(d) if(omp_flags[12])
+#pragma omp parallel for private(k, d) // omp_flags_12_
   for (j = 1; j <= lastrow - firstrow + 1; j++)
   {
     d = 0.0;
-    // if(omp_flags[13])
+
+
     for (k = rowstr[j]; k <= rowstr[j + 1] - 1; k++)
     {
       d = d + a[k] * z[colidx[k]];
@@ -525,7 +525,7 @@ static void conj_grad(
     w[j] = d;
   }
 
-  //if(omp_flags[14])
+#pragma omp simd // omp_flags_14_
   for (j = 1; j <= lastcol - firstcol + 1; j++)
   {
     r[j] = w[j];
@@ -534,7 +534,7 @@ static void conj_grad(
   /*--------------------------------------------------------------------
     c  At this point, r contains A.z
     c-------------------------------------------------------------------*/
-  #pragma omp parallel for reduction(+:sum) if(omp_flags[15])
+#pragma omp simd reduction(+ : sum) // omp_flags_15_
   for (j = 1; j <= lastcol - firstcol + 1; j++)
   {
     d = x[j] - r[j];
@@ -570,23 +570,23 @@ c       iv, arow, acol i
 c       v, aelt        r*8
 c---------------------------------------------------------------------*/
 static void makea(
-    int n,
-    int nz,
-    double a[],   /* a[1:nz] */
-    int colidx[], /* colidx[1:nz] */
-    int rowstr[], /* rowstr[1:n+1] */
-    int nonzer,
-    int firstrow,
-    int lastrow,
-    int firstcol,
-    int lastcol,
-    double rcond,
-    int arow[],    /* arow[1:nz] */
-    int acol[],    /* acol[1:nz] */
-    double aelt[], /* aelt[1:nz] */
-    double v[],    /* v[1:n+1] */
-    int iv[],      /* iv[1:2*n+1] */
-    double shift)
+  int n,
+  int nz,
+  double a[],   /* a[1:nz] */
+  int colidx[], /* colidx[1:nz] */
+  int rowstr[], /* rowstr[1:n+1] */
+  int nonzer,
+  int firstrow,
+  int lastrow,
+  int firstcol,
+  int lastcol,
+  double rcond,
+  int arow[],    /* arow[1:nz] */
+  int acol[],    /* acol[1:nz] */
+  double aelt[], /* aelt[1:nz] */
+  double v[],    /* v[1:n+1] */
+  int iv[],      /* iv[1:2*n+1] */
+  double shift)
 {
   int i, nnza, iouter, ivelt, ivelt1, irow, nzv;
 
@@ -629,7 +629,7 @@ static void makea(
             if (nnza > nz)
             {
               printf("Space for matrix elements exceeded in"
-                     " makea\n");
+                " makea\n");
               printf("nnza, nzmax = %d, %d\n", nnza, nz);
               printf("iouter = %d\n", iouter);
               exit(1);
@@ -679,19 +679,19 @@ c       generate a sparse matrix from a list of
 c       [col, row, element] tri
 c---------------------------------------------------*/
 static void sparse(
-    double a[],   /* a[1:*] */
-    int colidx[], /* colidx[1:*] */
-    int rowstr[], /* rowstr[1:*] */
-    int n,
-    int arow[],    /* arow[1:*] */
-    int acol[],    /* acol[1:*] */
-    double aelt[], /* aelt[1:*] */
-    int firstrow,
-    int lastrow,
-    double x[],     /* x[1:n] */
-    boolean mark[], /* mark[1:n] */
-    int nzloc[],    /* nzloc[1:n] */
-    int nnza)
+  double a[],   /* a[1:*] */
+  int colidx[], /* colidx[1:*] */
+  int rowstr[], /* rowstr[1:*] */
+  int n,
+  int arow[],    /* arow[1:*] */
+  int acol[],    /* acol[1:*] */
+  double aelt[], /* aelt[1:*] */
+  int firstrow,
+  int lastrow,
+  double x[],     /* x[1:n] */
+  boolean mark[], /* mark[1:n] */
+  int nzloc[],    /* nzloc[1:n] */
+  int nnza)
 {
   /*---------------------------------------------------------------------
   c       rows range from firstrow to lastrow
@@ -733,9 +733,9 @@ static void sparse(
     c           of row j of a
     c---------------------------------------------------------------------*/
 
-  /*--------------------------------------------------------------------
-    c     ... do a bucket sort of the triples on the row index
-    c-------------------------------------------------------------------*/
+    /*--------------------------------------------------------------------
+      c     ... do a bucket sort of the triples on the row index
+      c-------------------------------------------------------------------*/
   for (nza = 1; nza <= nnza; nza++)
   {
     j = arow[nza] - firstrow + 1;
@@ -815,12 +815,12 @@ c       this corrects a performance bug found by John G. Lewis, caused by
 c       reinitialization of mark on every one of the n calls to sprnvc
 ---------------------------------------------------------------------*/
 static void sprnvc(
-    int n,
-    int nz,
-    double v[],  /* v[1:*] */
-    int iv[],    /* iv[1:*] */
-    int nzloc[], /* nzloc[1:n] */
-    int mark[])
+  int n,
+  int nz,
+  double v[],  /* v[1:*] */
+  int iv[],    /* iv[1:*] */
+  int nzloc[], /* nzloc[1:n] */
+  int mark[])
 { /* mark[1:n] */
   int nn1;
   int nzrow, nzv, ii, i;
@@ -884,12 +884,12 @@ c       set ith element of sparse vector (v, iv) with
 c       nzv nonzeros to val
 c-------------------------------------------------------------------*/
 static void vecset(
-    int n,
-    double v[], /* v[1:*] */
-    int iv[],   /* iv[1:*] */
-    int *nzv,
-    int i,
-    double val)
+  int n,
+  double v[], /* v[1:*] */
+  int iv[],   /* iv[1:*] */
+  int* nzv,
+  int i,
+  double val)
 {
   int k;
   boolean set;

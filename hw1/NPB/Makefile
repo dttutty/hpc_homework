@@ -1,5 +1,5 @@
 SHELL=/bin/sh
-CLASS=S
+# CLASS=S
 SFILE=config/suite.def
 
 default: header

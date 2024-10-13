@@ -1,0 +1,16 @@
+Flag    Threads Time/s  Mop/s   Ver
+conf_rolled_1   16      0.08    19694.15        SUCCESSFUL
+conf_rolled_1   112     0.07    21976.06        SUCCESSFUL
+conf_rolled_0   1       0.52    2901.7  SUCCESSFUL
+conf_rolled_1   8       0.1     15177.23        SUCCESSFUL
+conf_rolled_1   128     0.09    15852.83        SUCCESSFUL
+conf_rolled_1   48      0.06    27122.07        SUCCESSFUL
+conf_rolled_1   32      0.06    23599.75        SUCCESSFUL
+conf_rolled_1   2       0.3     4991.23 SUCCESSFUL
+conf_rolled_1   64      0.06    26118.97        SUCCESSFUL
+conf_rolled_1   80      0.06    25153.55        SUCCESSFUL
+conf_rolled_1   1       0.57    2629.61 SUCCESSFUL
+conf_rolled_1   96      0.06    23880.32        SUCCESSFUL
+conf_rolled_1   512     0.57    2625.09 SUCCESSFUL
+conf_rolled_1   256     0.31    4883.23 SUCCESSFUL
+conf_rolled_1   4       0.17    9038.34 SUCCESSFUL
