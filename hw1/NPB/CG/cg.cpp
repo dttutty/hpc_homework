@@ -389,6 +389,7 @@ static void conj_grad(
     */
 
     /* rolled version */
+    // #pragma omp parallel for private(k, sum)
 //     for (j = 1; j <= lastrow - firstrow + 1; j++)
 //     {
 //       sum = 0.0;
@@ -400,6 +401,7 @@ static void conj_grad(
 //     }
 
     // unrolled-by-two version
+    // #pragma omp parallel for private(j, k)
     // for (j = 1; j <= lastrow - firstrow + 1; j++) {
     //   int iresidue;
     //   double sum1, sum2;
@@ -408,6 +410,7 @@ static void conj_grad(
     //   sum1 = 0.0;
     //   sum2 = 0.0;
     //   if (iresidue == 1) sum1 = sum1 + a[i] * p[colidx[i]];
+    //#pragma omp simd reduction(+:sum1, sum2)
     //   for (k = i + iresidue; k <= rowstr[j + 1] - 2; k += 2) {
     //     sum1 = sum1 + a[k] * p[colidx[k]];
     //     sum2 = sum2 + a[k + 1] * p[colidx[k + 1]];
