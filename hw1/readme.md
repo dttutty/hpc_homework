@@ -175,7 +175,7 @@ As we can see from the above tables, the performance is basically unchanged for 
 - The details of `conf_rolled_3` have been ilustrated in previous tables.
 
 
-|CLASS|  `conf_rolled_3` | `conf_unrolled_by2_1` | `conf_unrolled_by8_1`|
+|CLASS|  `conf_rolled_3` | `conf_unrolled_by2` | `conf_unrolled_by8`|
 |--|--|--|--|
 |S|![](NPB/result_pic/R3/S.png)|![](NPB/result_pic/U1/S.png)|![](NPB/result_pic/V1/S.png)|
 |W|![](NPB/result_pic/R3/W.png)|![](NPB/result_pic/U1/W.png)|![](NPB/result_pic/V1/W.png)|
