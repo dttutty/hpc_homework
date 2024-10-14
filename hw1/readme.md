@@ -17,7 +17,8 @@
 | Model name        | AMD EPYC 7V13 64-Core     |
 | Core(s) per socket| 64                        |
 | Socket(s)         | 2                         |
-| Hyper-Threading?  | No                        |
+| Support Hyper-Threading  | Yes                        |
+| Hyper-Threading enabled?  | No                        |
 | Thread(s)         | 128                       |
 
 
@@ -41,17 +42,17 @@
 |--|--|--|--|
 | 1st     | `simd`                            | `parallel for simd`                    | `parallel for`                    |
 | 2nd     | `simd reduction(+ : rho)`         | `parallel for simd reduction(+ : rho)` | `parallel for reduction(+ : rho)` |
-| 3rd     | DISABLED                          | DISABLED                 		       | DISABLED                 		   |
-| -4th    | `parallel for private(k, sum)`    | SAME as LEFT      		               | SAME as LEFT     		           |
-| --5th   | DISABLED                          | SAME as LEFT                           | SAME as LEFT                      |
+| 3rd     | Not Parallelized                  | Not Parallelized            		       | Not Parallelized            		   |
+| -4th    | `parallel for private(k, sum)`    | SAME as LEFT      		                 | SAME as LEFT     		             |
+| --5th   | Not Parallelized                  | Not Parallelized                       | Not Parallelized                  |
 | -6th    | `simd`                            | `parallel for simd`                    | `parallel for`                    |
 | -7th    | `simd`                            | `parallel for simd`                    | `parallel for`                    |
 | -8th    | `simd reduction(+ : d)`           | `parallel for simd reduction(+ : d)`   | `parallel for reduction(+ : d)`   |
 | -9th    | `simd`                            | `parallel for simd`                    | `parallel for`                    |
 | -10th   | `simd reduction(+ : rho)`         | `parallel for simd reduction(+ : rho)` | `parallel for reduction(+ : rho)` |
 | -11th   | `simd`                            | `parallel for simd`                    | `parallel for`                    |
-| 12th    | `parallel for private(k, d)`      | SAME as LEFT      				       | SAME as LEFT      				   |
-| -13th   | DISABLED                          | DISABLED                               | DISABLED                          | 
+| 12th    | `parallel for private(k, d)`      | SAME as LEFT            				       | SAME as LEFT              			   |
+| -13th   | Not Parallelized                  | Not Parallelized                       | Not Parallelized                  | 
 | 14th    | `simd`                            | `parallel for simd`                    | `parallel for`                    |
 | 15th    | `simd reduction(+ : sum)`         | `parallel for simd reduction(+ : sum)` | `parallel for reduction(+ : sum)` |
 
@@ -66,60 +67,55 @@
 ### CLASS=C
 ![](NPB/result_pic/R/C.png)
 
-## Unrolled by 2 Version
-
-| `for` | `conf_unrolled_by2_1` |
-|--|--|
-| 1st     | `parallel for simd`                    |
-| 2nd     | `parallel for simd reduction(+ : rho)` |
-| 3rd     | DISABLED                 		       | 
-| -4th    | `for private(j, k)`                    |
-| --5th   | `simd reduction(+:sum1, sum2)`         |
-| -6th    | `parallel for simd`                    |
-| -7th    | `parallel for simd`                    |
-| -8th    | `parallel for simd reduction(+ : d)`   |
-| -9th    | `parallel for simd`                    |
-| -10th   | `parallel for simd reduction(+ : rho)` |
-| -11th   | `parallel for simd`                    |
-| 12th    | `parallel for private(k, d)`      	   |
-| -13th   | DISABLED                               |
-| 14th    | `parallel for simd`                    |
-| 15th    | `parallel for simd reduction(+ : sum)` |
-
-### CLASS=S
-![](NPB/result_pic/U1/S.png)
-### CLASS=W
-![](NPB/result_pic/U1/W.png)
-### CLASS=A
-![](NPB/result_pic/U1/A.png)
-### CLASS=B
-![](NPB/result_pic/U1/B.png)
-### CLASS=C
-![](NPB/result_pic/U1/C.png)
+## Unrolled Version
 
 
-## Unrolled by 8 Version
 
-| `for` | `conf_unrolled_by8_1` |
-|--|--|
-| 1st     | `simd`                            |
-| 2nd     | `simd reduction(+ : rho)`         |
-| 3rd     | DISABLED                          |
-| -4th    | `parallel for private(j, k, sum)` |
-| an additional one after the 4th | DISABLED            
-| --5th   | DISABLED                          |
-| -6th    | `simd`                            |
-| -7th    | `simd`                            | 
-| -8th    | `simd reduction(+ : d)`           |
-| -9th    | `simd`                            |
-| -10th   | `simd reduction(+ : rho)`         |
-| -11th   | `simd`                            |
-| 12th    | `parallel for private(k, d)`      |
-| -13th   | DISABLED                          |
-| 14th    | `simd`                            |
-| 15th    | `simd reduction(+ : sum)`         |
+|conf | description|
+|-------------------|---------------------------|
+|`conf_unrolled_by2`|unrolled by 2|
+|`conf_unrolled_by8`|unrolled by 8|
 
-# My Idea
+
+**Attention**:
+- To facilitate comparison with the `unrolled_by2` version, I have ignored the for loop following the 4th for loop in the `unrolled_by8` code, and treated the 6th for loop as the 5th for loop, and so on. 
+- The for loop I just mentioned cannot be parallelized.
+- in order to save time, I repeated `conf_unrolled_by2_1` and `conf_unrolled_by8_1` with each conbination of `CLASS` and `thread numbers` 2 times to obtain the mean `Mop/s` and its standard deviation.
+
+
+
+| `for` | `conf_unrolled_by2_1` | `conf_unrolled_by8_1` |
+|--|--|--|
+| 1st     | `parallel for`                    | `parallel for`                     |
+| 2nd     | `parallel for reduction(+ : rho)` | `parallel for reduction(+ : rho)`  |
+| 3rd     | Not Parallelized         		      | Not Parallelized                   |
+| -4th    | `parallel for private(j, k)`      | `parallel for private(j, k, sum)`  |
+| --5th   | `simd reduction(+:sum1, sum2)`    | `simd reduction(+ : sum)`                             |
+| -6th    | `parallel for`                    | `parallel for `                    |
+| -7th    | `parallel for`                    | `parallel for `                    |
+| -8th    | `parallel for reduction(+ : d)`   | `parallel for reduction(+ : d)`    |
+| -9th    | `parallel for`                    | `parallel for `                    |
+| -10th   | `parallel for reduction(+ : rho)` | `parallel for reduction(+ : rho)`  |
+| -11th   | `parallel for`                    | `parallel for `                    |
+| 12th    | `parallel for private(k, d)`      | `parallel for private(k, d)`       |
+| -13th   | Not Parallelized                  | Not Parallelized                   |
+| 14th    | `parallel for`                    | `parallel for `                    |
+| 15th    | `parallel for reduction(+ : sum)` | `parallel for reduction(+ : sum)`  |
+
+
+
+
+|CLASS|  `conf_rolled_3` | `conf_unrolled_by2_1` | `conf_unrolled_by8_1`|
+|--|--|--|--|
+|S|![](NPB/result_pic/R3/S.png)|![](NPB/result_pic/U1/S.png)|![](NPB/result_pic/V1/S.png)|
+|W|![](NPB/result_pic/R3/W.png)|![](NPB/result_pic/U1/W.png)|![](NPB/result_pic/V1/W.png)|
+|A|![](NPB/result_pic/R3/A.png)|![](NPB/result_pic/U1/A.png)|![](NPB/result_pic/V1/A.png)|
+|B|![](NPB/result_pic/R3/B.png)|![](NPB/result_pic/U1/B.png)|![](NPB/result_pic/V1/B.png)|
+|C|![](NPB/result_pic/R3/C.png)|![](NPB/result_pic/U1/C.png)|![](NPB/result_pic/V1/C.png)|
+
+
+
+# My Thought
 
 1. Why are the following 2 nested loops not suitable for SIMD?  
 ```#pragma omp parallel for private(k, sum) // omp_flags_4_
@@ -155,8 +151,10 @@ Because the following variables depend on results from previous iterations, if w
 `p[j] = r[j] + beta * p[j];`  
 `z[j] = z[j] + alpha * p[j];`  
 `r[j] = r[j] - alpha * q[j];`  
-3. Is there potententional for improvement?  
-When I set the threads to best threads number (on which the largest mop/s value can be achieved), I continuouly run the binary file
+
+3. SIMD vs parallel
+When the problem size is small, SIMD can provide greater performance improvements (because SIMD has low overhead). As the problem size increases, the performance improvement from parallelization becomes more significant (since SIMD processing power becomes insufficient for larger problems, and the overhead of thread management in parallel can be amortized). The performance of `parallel for` and `parallel for simd` is roughly the same(because gcc will ignore )
+
 
 #  Analysis and Discussion
 
@@ -175,16 +173,13 @@ The baseline I have chosen is the config without parallelization or SIMD (shown 
 2. Do the performance improvements meet your expectations? Why or why not?
 The results align with my expectations in terms of parallel efficiency: larger problems benefit significantly from parallelism,  smaller ones suffer from parallel overhead.
 
-
 3. What is the optimal number of threads for CG on your system? Why?
 The optimal number of threads for each class is shown in the table above. From this, we can conclude that:  
 - As the size of the problem increases, more threads are required to fully exploit the advantages of parallelism, leading to a higher speedup ratio.
 - For smaller problems, the parallelization overhead is relatively significant compared to the computational workload, so the optimal number of threads is smaller.
 
 
-For small size problem, the overhead of parallel is relatively big, so the best thread nums is smaller.
+# Optional
 
-
-1. Evaluate how loop unrolling affects the performance of parallel codes. Unrolled versions of one of the loops
-in conj-grad is given in comments in the source file. Run these versions, and possibly add your own, and
-compare the parallel performance with the rolled version.
+1. Evaluate how loop unrolling affects the performance of parallel codes. Unrolled versions of one of the loops in conj-grad is given in comments in the source file. Run these versions, and possibly add your own, and compare the parallel performance with the rolled version.
+As we can see from the above tables, the performance is basically unchanged for large-sized problems. For small-sized problems (Class S), there is a slight improvement in performance.

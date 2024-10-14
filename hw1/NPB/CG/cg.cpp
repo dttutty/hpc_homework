@@ -400,43 +400,45 @@ static void conj_grad(
 //     }
 
     // unrolled-by-two version
-#pragma omp parallel for private(j, k) // omp_flags_4_
+    // for (j = 1; j <= lastrow - firstrow + 1; j++) {
+    //   int iresidue;
+    //   double sum1, sum2;
+    //   int i = rowstr[j];
+    //   iresidue = (rowstr[j + 1] - i) % 2;
+    //   sum1 = 0.0;
+    //   sum2 = 0.0;
+    //   if (iresidue == 1) sum1 = sum1 + a[i] * p[colidx[i]];
+    //   for (k = i + iresidue; k <= rowstr[j + 1] - 2; k += 2) {
+    //     sum1 = sum1 + a[k] * p[colidx[k]];
+    //     sum2 = sum2 + a[k + 1] * p[colidx[k + 1]];
+    //   }
+    //   w[j] = sum1 + sum2;
+    // }
+
+    // unrolled-by-8 version
+#pragma omp parallel for private(j, k, sum) // omp_flags_4_
     for (j = 1; j <= lastrow - firstrow + 1; j++) {
       int iresidue;
-      double sum1 = 0.0, sum2 = 0.0;
       int i = rowstr[j];
-      iresidue = (rowstr[j + 1] - i) % 2;
-      if (iresidue == 1) sum1 = sum1 + a[i] * p[colidx[i]];
-#pragma omp simd  reduction(+:sum1, sum2) // omp_flags_5_
-      for (k = i + iresidue; k <= rowstr[j + 1] - 2; k += 2) {
-        sum1 = sum1 + a[k] * p[colidx[k]];
-        sum2 = sum2 + a[k + 1] * p[colidx[k + 1]];
+      iresidue = (rowstr[j + 1] - i) % 8;
+      sum = 0.0;
+      for (k = i; k <= i + iresidue - 1; k++) {
+        sum = sum + a[k] * p[colidx[k]];
       }
-      w[j] = sum1 + sum2;
+#pragma omp simd reduction(+ : sum) // omp_flags_5_
+      for (k = i + iresidue; k <= rowstr[j + 1] - 8; k += 8) {
+        sum = sum + a[k] * p[colidx[k]]
+          + a[k + 1] * p[colidx[k + 1]]
+          + a[k + 2] * p[colidx[k + 2]]
+          + a[k + 3] * p[colidx[k + 3]]
+          + a[k + 4] * p[colidx[k + 4]]
+          + a[k + 5] * p[colidx[k + 5]]
+          + a[k + 6] * p[colidx[k + 6]]
+          + a[k + 7] * p[colidx[k + 7]];
+      }
+      w[j] = sum;
     }
 
-    /* unrolled-by-8 version
-for (j = 1; j <= lastrow-firstrow+1; j++) {
-int iresidue;
-i = rowstr[j];
-iresidue = (rowstr[j+1]-i) % 8;
-sum = 0.0;
-for (k = i; k <= i+iresidue-1; k++) {
-sum = sum +  a[k] * p[colidx[k]];
-}
-for (k = i+iresidue; k <= rowstr[j+1]-8; k += 8) {
-sum = sum + a[k  ] * p[colidx[k  ]]
-+ a[k+1] * p[colidx[k+1]]
-+ a[k+2] * p[colidx[k+2]]
-+ a[k+3] * p[colidx[k+3]]
-+ a[k+4] * p[colidx[k+4]]
-+ a[k+5] * p[colidx[k+5]]
-+ a[k+6] * p[colidx[k+6]]
-+ a[k+7] * p[colidx[k+7]];
-}
-w[j] = sum;
-}
-*/
 #pragma omp parallel for // omp_flags_6_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
