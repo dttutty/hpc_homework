@@ -344,7 +344,7 @@ static void conj_grad(
     c  Initialize the CG algorithm:
     c-------------------------------------------------------------------*/
 
-#pragma omp simd // omp_flags_1_
+#pragma omp parallel for // omp_flags_1_
   for (j = 1; j <= naa + 1; j++)
   {
     q[j] = 0.0;
@@ -358,7 +358,7 @@ static void conj_grad(
     c  rho = r.r
     c  Now, obtain the norm of r: First, sum squares of r elements locally...
     c-------------------------------------------------------------------*/
-#pragma omp simd reduction(+ : rho) // omp_flags_2_
+#pragma omp parallel for reduction(+ : rho) // omp_flags_2_
   for (j = 1; j <= lastcol - firstcol + 1; j++)
   {
     rho = rho + x[j] * x[j];
@@ -369,7 +369,6 @@ static void conj_grad(
     c  The conj grad iteration loop
     c---->
     c-------------------------------------------------------------------*/
-// omp_flags_3_ not suitable for parallelization
   for (cgit = 1; cgit <= cgitmax; cgit++)
   {
     rho0 = rho;
@@ -390,57 +389,55 @@ static void conj_grad(
     */
 
     /* rolled version */
-#pragma omp parallel for private(k, sum) // omp_flags_4_
-    for (j = 1; j <= lastrow - firstrow + 1; j++)
-    {
-      sum = 0.0;
-// omp_flags_5_ not suitable for parallelization
-      for (k = rowstr[j]; k < rowstr[j + 1]; k++)
-      {
-        sum = sum + a[k] * p[colidx[k]];
-      }
-      w[j] = sum;
-    }
+//     for (j = 1; j <= lastrow - firstrow + 1; j++)
+//     {
+//       sum = 0.0;
+//       for (k = rowstr[j]; k < rowstr[j + 1]; k++)
+//       {
+//         sum = sum + a[k] * p[colidx[k]];
+//       }
+//       w[j] = sum;
+//     }
 
-    /* unrolled-by-two version
-      for (j = 1; j <= lastrow-firstrow+1; j++) {
+    // unrolled-by-two version
+#pragma omp parallel for private(j, k) // omp_flags_4_
+    for (j = 1; j <= lastrow - firstrow + 1; j++) {
       int iresidue;
-      double sum1, sum2;
-      i = rowstr[j];
-      iresidue = (rowstr[j+1]-i) % 2;
-      sum1 = 0.0;
-      sum2 = 0.0;
-      if (iresidue == 1) sum1 = sum1 + a[i]*p[colidx[i]];
-      for (k = i+iresidue; k <= rowstr[j+1]-2; k += 2) {
-      sum1 = sum1 + a[k]   * p[colidx[k]];
-      sum2 = sum2 + a[k+1] * p[colidx[k+1]];
+      double sum1 = 0.0, sum2 = 0.0;
+      int i = rowstr[j];
+      iresidue = (rowstr[j + 1] - i) % 2;
+      if (iresidue == 1) sum1 = sum1 + a[i] * p[colidx[i]];
+#pragma omp simd  reduction(+:sum1, sum2) // omp_flags_5_
+      for (k = i + iresidue; k <= rowstr[j + 1] - 2; k += 2) {
+        sum1 = sum1 + a[k] * p[colidx[k]];
+        sum2 = sum2 + a[k + 1] * p[colidx[k + 1]];
       }
       w[j] = sum1 + sum2;
-      }
-          */
-          /* unrolled-by-8 version
-      for (j = 1; j <= lastrow-firstrow+1; j++) {
-      int iresidue;
-      i = rowstr[j];
-      iresidue = (rowstr[j+1]-i) % 8;
-      sum = 0.0;
-      for (k = i; k <= i+iresidue-1; k++) {
-      sum = sum +  a[k] * p[colidx[k]];
-      }
-      for (k = i+iresidue; k <= rowstr[j+1]-8; k += 8) {
-      sum = sum + a[k  ] * p[colidx[k  ]]
-      + a[k+1] * p[colidx[k+1]]
-      + a[k+2] * p[colidx[k+2]]
-      + a[k+3] * p[colidx[k+3]]
-      + a[k+4] * p[colidx[k+4]]
-      + a[k+5] * p[colidx[k+5]]
-      + a[k+6] * p[colidx[k+6]]
-      + a[k+7] * p[colidx[k+7]];
-      }
-      w[j] = sum;
-      }
-      */
-#pragma omp simd // omp_flags_6_
+    }
+
+    /* unrolled-by-8 version
+for (j = 1; j <= lastrow-firstrow+1; j++) {
+int iresidue;
+i = rowstr[j];
+iresidue = (rowstr[j+1]-i) % 8;
+sum = 0.0;
+for (k = i; k <= i+iresidue-1; k++) {
+sum = sum +  a[k] * p[colidx[k]];
+}
+for (k = i+iresidue; k <= rowstr[j+1]-8; k += 8) {
+sum = sum + a[k  ] * p[colidx[k  ]]
++ a[k+1] * p[colidx[k+1]]
++ a[k+2] * p[colidx[k+2]]
++ a[k+3] * p[colidx[k+3]]
++ a[k+4] * p[colidx[k+4]]
++ a[k+5] * p[colidx[k+5]]
++ a[k+6] * p[colidx[k+6]]
++ a[k+7] * p[colidx[k+7]];
+}
+w[j] = sum;
+}
+*/
+#pragma omp parallel for // omp_flags_6_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       q[j] = w[j];
@@ -449,7 +446,7 @@ static void conj_grad(
     /*--------------------------------------------------------------------
       c  Clear w for reuse...
       c-------------------------------------------------------------------*/
-#pragma omp simd // omp_flags_7_ #not suitable for parallelization
+#pragma omp parallel for // omp_flags_7_ #not suitable for parallelization
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       w[j] = 0.0;
@@ -458,7 +455,7 @@ static void conj_grad(
     /*--------------------------------------------------------------------
       c  Obtain p.q
       c-------------------------------------------------------------------*/
-#pragma omp simd reduction(+ : d) // omp_flags_8_
+#pragma omp parallel for reduction(+ : d) // omp_flags_8_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       d = d + p[j] * q[j];
@@ -473,7 +470,7 @@ static void conj_grad(
       c  Obtain z = z + alpha*p
       c  and    r = r - alpha*q
       c---------------------------------------------------------------------*/
-#pragma omp simd // omp_flags_9_
+#pragma omp parallel for // omp_flags_9_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       z[j] = z[j] + alpha * p[j];
@@ -484,7 +481,7 @@ static void conj_grad(
       c  rho = r.r
       c  Now, obtain the norm of r: First, sum squares of r elements locally...
       c---------------------------------------------------------------------*/
-#pragma omp simd reduction(+ : rho) // omp_flags_10_
+#pragma omp parallel for reduction(+ : rho) // omp_flags_10_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       rho = rho + r[j] * r[j];
@@ -498,7 +495,7 @@ static void conj_grad(
     /*--------------------------------------------------------------------
       c  p = r + beta*p
       c-------------------------------------------------------------------*/
-#pragma omp simd // omp_flags_11_
+#pragma omp parallel for // omp_flags_11_
     for (j = 1; j <= lastcol - firstcol + 1; j++)
     {
       p[j] = r[j] + beta * p[j];
@@ -516,8 +513,6 @@ static void conj_grad(
   for (j = 1; j <= lastrow - firstrow + 1; j++)
   {
     d = 0.0;
-
-
     for (k = rowstr[j]; k <= rowstr[j + 1] - 1; k++)
     {
       d = d + a[k] * z[colidx[k]];
@@ -525,7 +520,7 @@ static void conj_grad(
     w[j] = d;
   }
 
-#pragma omp simd // omp_flags_14_
+#pragma omp parallel for // omp_flags_14_
   for (j = 1; j <= lastcol - firstcol + 1; j++)
   {
     r[j] = w[j];
@@ -534,7 +529,7 @@ static void conj_grad(
   /*--------------------------------------------------------------------
     c  At this point, r contains A.z
     c-------------------------------------------------------------------*/
-#pragma omp simd reduction(+ : sum) // omp_flags_15_
+#pragma omp parallel for reduction(+ : sum) // omp_flags_15_
   for (j = 1; j <= lastcol - firstcol + 1; j++)
   {
     d = x[j] - r[j];
