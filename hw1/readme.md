@@ -71,7 +71,7 @@
 
 # My Thought
 
-1. Why are the following 2 nested loops not suitable for SIMD?  
+1. Why are the following 2 nested loops not suitable for SIMD?   
 ```#pragma omp parallel for private(k, sum) // omp_flags_4_
     for (j = 1; j <= lastrow - firstrow + 1; j++)
     {
@@ -97,7 +97,7 @@
 ```  
 Because `p[colidx[k]]` and `z[colidx[k]]` involves indirect memory access and the data is not contiguous, the above 2 nested loops are not suitable for SIMD.
 
-2. Why is the 3rd for loop not suitable for parallelization?  
+2. Why is the 3rd for loop not suitable for parallelization?   
 Because the following variables depend on results from previous iterations, if we add a parallel directive to the 3rd for loop, multiple threads will read from and write to these variables simultaneously, leading to incorrect results.
 `rho0 = rho;`  
 `alpha = rho0 / d;`  
@@ -106,13 +106,13 @@ Because the following variables depend on results from previous iterations, if w
 `z[j] = z[j] + alpha * p[j];`  
 `r[j] = r[j] - alpha * q[j];`  
 
-3. SIMD vs parallel
-When the problem size is small, SIMD can provide greater performance improvements (because SIMD has low overhead). As the problem size increases, the performance improvement from parallelization becomes more significant (since SIMD processing power becomes insufficient for larger problems, and the overhead of thread management in parallel can be amortized). The performance of `parallel for` and `parallel for simd` is roughly the same(because gcc will ignore )
+3. SIMD vs parallel   
+When the problem size is small, SIMD can provide greater performance improvements (because SIMD has low overhead). As the problem size increases, the performance improvement from parallelization becomes more significant (since SIMD processing power becomes insufficient for larger problems, and the overhead of thread management in parallel can be amortized). The performance of `parallel for` and `parallel for simd` is roughly the same.
 
 
 #  Analysis and Discussion
 
-1. What is the maximum speedup your code is able to achieve on top of the baseline sequential version? Clearly indicate what you consider to be the baseline.
+1. What is the maximum speedup your code is able to achieve on top of the baseline sequential version? Clearly indicate what you consider to be the baseline.   
 The baseline I have chosen is the config without parallelization or SIMD (shown as a grey horizontal line on each figure). The maximum speedup for each class is shown below. The speedup ratio is calculated as the maximum speed (Mop/s) divided by the baseline speed (Mop/s).
 
 | class | max speedup | threads num | config |
@@ -124,10 +124,10 @@ The baseline I have chosen is the config without parallelization or SIMD (shown 
 | C     | 32.10x        | 124                       | conf_rolled_3: mostly parallel for |
 
 
-2. Do the performance improvements meet your expectations? Why or why not?
+2. Do the performance improvements meet your expectations? Why or why not?   
 The results align with my expectations in terms of parallel efficiency: larger problems benefit significantly from parallelism,  smaller ones suffer from parallel overhead.
 
-3. What is the optimal number of threads for CG on your system? Why?
+3. What is the optimal number of threads for CG on your system? Why?   
 The optimal number of threads for each class is shown in the table above. From this, we can conclude that:  
 - As the size of the problem increases, more threads are required to fully exploit the advantages of parallelism, leading to a higher speedup ratio.
 - For smaller problems, the parallelization overhead is relatively significant compared to the computational workload, so the optimal number of threads is smaller.
@@ -135,7 +135,7 @@ The optimal number of threads for each class is shown in the table above. From t
 
 # Optional
 
-1. Evaluate how loop unrolling affects the performance of parallel codes. Unrolled versions of one of the loops in conj-grad is given in comments in the source file. Run these versions, and possibly add your own, and compare the parallel performance with the rolled version.
+1. Evaluate how loop unrolling affects the performance of parallel codes. Unrolled versions of one of the loops in conj-grad is given in comments in the source file. Run these versions, and possibly add your own, and compare the parallel performance with the rolled version.  
 As we can see from the above tables, the performance is basically unchanged for large-sized problems. For small-sized problems (Class S), there is a slight improvement in performance.
 
 
