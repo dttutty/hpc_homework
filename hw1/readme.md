@@ -38,7 +38,7 @@
 
 - `#pragma omp` is ignored in following tables to save space
 
-| `for` | `conf_rolled_1` | `conf_rolled_2`| `conf_rolled_3`|
+|for loop | `conf_rolled_1` | `conf_rolled_2`| `conf_rolled_3`|
 |--|--|--|--|
 | 1st     | `simd`                            | `parallel for simd`                    | `parallel for`                    |
 | 2nd     | `simd reduction(+ : rho)`         | `parallel for simd reduction(+ : rho)` | `parallel for reduction(+ : rho)` |
@@ -81,10 +81,10 @@
 - To facilitate comparison with the `unrolled_by2` version, I have ignored the for loop following the 4th for loop in the `unrolled_by8` code, and treated the 6th for loop as the 5th for loop, and so on. 
 - The for loop I just mentioned cannot be parallelized.
 - in order to save time, I repeated `conf_unrolled_by2_1` and `conf_unrolled_by8_1` with each conbination of `CLASS` and `thread numbers` 2 times to obtain the mean `Mop/s` and its standard deviation.
+- The details of `conf_rolled_3` have been ilustrated in previous tables.
 
 
-
-| `for` | `conf_unrolled_by2_1` | `conf_unrolled_by8_1` |
+| for loop | `conf_unrolled_by2_1` | `conf_unrolled_by8_1` |
 |--|--|--|
 | 1st     | `parallel for`                    | `parallel for`                     |
 | 2nd     | `parallel for reduction(+ : rho)` | `parallel for reduction(+ : rho)`  |

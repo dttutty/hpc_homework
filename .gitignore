@@ -3,3 +3,7 @@
 *.out
 *.txt
 *.log
+hw1/.vscode/
+hw1/bin/*
+.vscode/
+
