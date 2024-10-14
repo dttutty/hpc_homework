@@ -9,7 +9,7 @@
 | C     | 150000    | 15            | 75        | 110.0 |
 
 
-# Server Detail
+# Server Details
 `AMD EPYC 7V13` supports the following SIMD and vector-related instruction sets: `sse` `sse2` `ssse3`  `sse4_1` `sse4_2`   `sse4a` `misalignsse` `avx` `avx2`
 | Specification     | Value                     |
 |-------------------|---------------------------|
@@ -69,7 +69,7 @@
 
 
 
-# My Thought
+# My Thoughts
 
 1. Why are the following 2 nested loops not suitable for SIMD?   
 ```#pragma omp parallel for private(k, sum) // omp_flags_4_
@@ -150,7 +150,7 @@ As we can see from the above tables, the performance is basically unchanged for 
 
 
 
-| for loop | `conf_unrolled_by2_1` | `conf_unrolled_by8_1` |
+| for loop | `conf_unrolled_by2` | `conf_unrolled_by8` |
 |--|--|--|
 | 1st     | `parallel for`                    | `parallel for`                     |
 | 2nd     | `parallel for reduction(+ : rho)` | `parallel for reduction(+ : rho)`  |
@@ -173,8 +173,6 @@ As we can see from the above tables, the performance is basically unchanged for 
 - The for loop I just mentioned cannot be parallelized.
 - in order to save time, I repeated `conf_unrolled_by2_1` and `conf_unrolled_by8_1` with each conbination of `CLASS` and `thread numbers` 2 times to obtain the mean `Mop/s` and its standard deviation.
 - The details of `conf_rolled_3` have been ilustrated in previous tables.
-
-
 
 
 |CLASS|  `conf_rolled_3` | `conf_unrolled_by2_1` | `conf_unrolled_by8_1`|
