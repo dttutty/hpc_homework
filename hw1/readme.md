@@ -67,52 +67,6 @@
 ### CLASS=C
 ![](NPB/result_pic/R/C.png)
 
-## Unrolled Version
-
-
-
-|conf | description|
-|-------------------|---------------------------|
-|`conf_unrolled_by2`|unrolled by 2|
-|`conf_unrolled_by8`|unrolled by 8|
-
-
-**Attention**:
-- To facilitate comparison with the `unrolled_by2` version, I have ignored the for loop following the 4th for loop in the `unrolled_by8` code, and treated the 6th for loop as the 5th for loop, and so on. 
-- The for loop I just mentioned cannot be parallelized.
-- in order to save time, I repeated `conf_unrolled_by2_1` and `conf_unrolled_by8_1` with each conbination of `CLASS` and `thread numbers` 2 times to obtain the mean `Mop/s` and its standard deviation.
-- The details of `conf_rolled_3` have been ilustrated in previous tables.
-
-
-| for loop | `conf_unrolled_by2_1` | `conf_unrolled_by8_1` |
-|--|--|--|
-| 1st     | `parallel for`                    | `parallel for`                     |
-| 2nd     | `parallel for reduction(+ : rho)` | `parallel for reduction(+ : rho)`  |
-| 3rd     | Not Parallelized         		      | Not Parallelized                   |
-| -4th    | `parallel for private(j, k)`      | `parallel for private(j, k, sum)`  |
-| --5th   | `simd reduction(+:sum1, sum2)`    | `simd reduction(+ : sum)`                             |
-| -6th    | `parallel for`                    | `parallel for `                    |
-| -7th    | `parallel for`                    | `parallel for `                    |
-| -8th    | `parallel for reduction(+ : d)`   | `parallel for reduction(+ : d)`    |
-| -9th    | `parallel for`                    | `parallel for `                    |
-| -10th   | `parallel for reduction(+ : rho)` | `parallel for reduction(+ : rho)`  |
-| -11th   | `parallel for`                    | `parallel for `                    |
-| 12th    | `parallel for private(k, d)`      | `parallel for private(k, d)`       |
-| -13th   | Not Parallelized                  | Not Parallelized                   |
-| 14th    | `parallel for`                    | `parallel for `                    |
-| 15th    | `parallel for reduction(+ : sum)` | `parallel for reduction(+ : sum)`  |
-
-
-
-
-|CLASS|  `conf_rolled_3` | `conf_unrolled_by2_1` | `conf_unrolled_by8_1`|
-|--|--|--|--|
-|S|![](NPB/result_pic/R3/S.png)|![](NPB/result_pic/U1/S.png)|![](NPB/result_pic/V1/S.png)|
-|W|![](NPB/result_pic/R3/W.png)|![](NPB/result_pic/U1/W.png)|![](NPB/result_pic/V1/W.png)|
-|A|![](NPB/result_pic/R3/A.png)|![](NPB/result_pic/U1/A.png)|![](NPB/result_pic/V1/A.png)|
-|B|![](NPB/result_pic/R3/B.png)|![](NPB/result_pic/U1/B.png)|![](NPB/result_pic/V1/B.png)|
-|C|![](NPB/result_pic/R3/C.png)|![](NPB/result_pic/U1/C.png)|![](NPB/result_pic/V1/C.png)|
-
 
 
 # My Thought
@@ -183,3 +137,51 @@ The optimal number of threads for each class is shown in the table above. From t
 
 1. Evaluate how loop unrolling affects the performance of parallel codes. Unrolled versions of one of the loops in conj-grad is given in comments in the source file. Run these versions, and possibly add your own, and compare the parallel performance with the rolled version.
 As we can see from the above tables, the performance is basically unchanged for large-sized problems. For small-sized problems (Class S), there is a slight improvement in performance.
+
+
+## Unrolled Version
+
+
+
+|conf | description|
+|-------------------|---------------------------|
+|`conf_unrolled_by2`|unrolled by 2|
+|`conf_unrolled_by8`|unrolled by 8|
+
+
+
+| for loop | `conf_unrolled_by2_1` | `conf_unrolled_by8_1` |
+|--|--|--|
+| 1st     | `parallel for`                    | `parallel for`                     |
+| 2nd     | `parallel for reduction(+ : rho)` | `parallel for reduction(+ : rho)`  |
+| 3rd     | Not Parallelized         		      | Not Parallelized                   |
+| -4th    | `parallel for private(j, k)`      | `parallel for private(j, k, sum)`  |
+| --5th   | `simd reduction(+:sum1, sum2)`    | `simd reduction(+ : sum)`                             |
+| -6th    | `parallel for`                    | `parallel for `                    |
+| -7th    | `parallel for`                    | `parallel for `                    |
+| -8th    | `parallel for reduction(+ : d)`   | `parallel for reduction(+ : d)`    |
+| -9th    | `parallel for`                    | `parallel for `                    |
+| -10th   | `parallel for reduction(+ : rho)` | `parallel for reduction(+ : rho)`  |
+| -11th   | `parallel for`                    | `parallel for `                    |
+| 12th    | `parallel for private(k, d)`      | `parallel for private(k, d)`       |
+| -13th   | Not Parallelized                  | Not Parallelized                   |
+| 14th    | `parallel for`                    | `parallel for `                    |
+| 15th    | `parallel for reduction(+ : sum)` | `parallel for reduction(+ : sum)`  |
+
+**Attention**:
+- To facilitate comparison with the `unrolled_by2` version, I have ignored the for loop following the 4th for loop in the `unrolled_by8` code, and treated the 6th for loop as the 5th for loop, and so on. 
+- The for loop I just mentioned cannot be parallelized.
+- in order to save time, I repeated `conf_unrolled_by2_1` and `conf_unrolled_by8_1` with each conbination of `CLASS` and `thread numbers` 2 times to obtain the mean `Mop/s` and its standard deviation.
+- The details of `conf_rolled_3` have been ilustrated in previous tables.
+
+
+
+
+|CLASS|  `conf_rolled_3` | `conf_unrolled_by2_1` | `conf_unrolled_by8_1`|
+|--|--|--|--|
+|S|![](NPB/result_pic/R3/S.png)|![](NPB/result_pic/U1/S.png)|![](NPB/result_pic/V1/S.png)|
+|W|![](NPB/result_pic/R3/W.png)|![](NPB/result_pic/U1/W.png)|![](NPB/result_pic/V1/W.png)|
+|A|![](NPB/result_pic/R3/A.png)|![](NPB/result_pic/U1/A.png)|![](NPB/result_pic/V1/A.png)|
+|B|![](NPB/result_pic/R3/B.png)|![](NPB/result_pic/U1/B.png)|![](NPB/result_pic/V1/B.png)|
+|C|![](NPB/result_pic/R3/C.png)|![](NPB/result_pic/U1/C.png)|![](NPB/result_pic/V1/C.png)|
+
